@@ -1,4 +1,4 @@
-// This service now calls our OWN secure backend helper, not Google's API directly from the browser.
+// This service now calls our OWN secure backend helpers, not Google's API directly from the browser.
 
 export const translateText = async (text: string): Promise<string> => {
   if (!text.trim()) {
@@ -24,7 +24,38 @@ export const translateText = async (text: string): Promise<string> => {
 
   } catch (error) {
     console.error("Error calling translation service:", error);
-    // Provide a user-friendly error message.
     throw new Error("Failed to translate the search query. Please try again.");
+  }
+};
+
+
+export const detectLanguage = async (text: string): Promise<string> => {
+  if (!text.trim()) {
+    return "en"; // Assume english if empty
+  }
+
+  try {
+    const response = await fetch('/api/detect-language', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
+    });
+
+    if (!response.ok) {
+        // If detection fails, conservatively assume it needs translation
+        console.error("Language detection failed, proceeding with translation.");
+        return "unknown"; 
+    }
+
+    const data = await response.json();
+    // Return the language code (e.g., 'en', 'es')
+    return data.languageCode;
+
+  } catch (error) {
+    console.error("Error calling language detection service:", error);
+    // If there's a network error, assume it needs translation
+    return "unknown";
   }
 };

@@ -6,4 +6,11 @@ export interface Video {
   channelName: string;
   views: string;
   uploadedAt: string;
+  channelId: string;
+}
+
+export interface User {
+  name: string;
+  avatarUrl: string;
+  isPro: boolean;
 }

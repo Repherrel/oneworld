@@ -1,6 +1,5 @@
 
-// This is a serverless function that will run on the hosting provider (e.g., Vercel).
-// It's not code that runs in the user's browser.
+// This serverless function detects the language of a given text using Gemini.
 
 import { GoogleGenAI } from "@google/genai";
 
@@ -8,7 +7,6 @@ interface RequestBody {
   text?: string;
 }
 
-// This is the main function that will be executed.
 export default async function handler(req: Request) {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
@@ -21,7 +19,7 @@ export default async function handler(req: Request) {
     const { text } = (await req.json()) as RequestBody;
 
     if (!text) {
-      return new Response(JSON.stringify({ error: 'Text to translate is required' }), {
+      return new Response(JSON.stringify({ error: 'Text for language detection is required' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -29,21 +27,22 @@ export default async function handler(req: Request) {
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
 
+    // A more resource-efficient model can be used for this simple task.
     const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
-        contents: `Translate the following text to English. Respond with only the translated text, without any introductory phrases, explanations, or quotation marks. Text to translate: "${text}"`,
+        contents: `Detect the BCP-47 language code of the following text. Respond with only the two-letter language code and nothing else. For example, for "Hello world", respond "en". For "Hola mundo", respond "es". Text: "${text}"`,
     });
     
-    const translatedText = response.text.trim();
+    const languageCode = response.text.trim().toLowerCase();
 
-    return new Response(JSON.stringify({ translation: translatedText }), {
+    return new Response(JSON.stringify({ languageCode }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error("Error in translate function:", error);
-    return new Response(JSON.stringify({ error: 'Failed to communicate with the AI translation service.' }), {
+    console.error("Error in detect-language function:", error);
+    return new Response(JSON.stringify({ error: 'Failed to communicate with the AI language service.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

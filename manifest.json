@@ -1,0 +1,16 @@
+{
+  "short_name": "oneworld",
+  "name": "oneworld Global Video Search",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0f0f0f",
+  "background_color": "#0f0f0f",
+  "description": "Explore a universe of videos without language barriers. oneworld uses the Gemini API to translate your search, unlocking content from around the globe."
+}
