@@ -1,0 +1,5 @@
+{
+  "name": "oneworld",
+  "description": "Explore a universe of videos without language barriers. oneworld uses the Gemini API to translate your search, unlocking content from around the globe.",
+  "requestFramePermissions": []
+}
