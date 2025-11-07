@@ -3,13 +3,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SearchIcon } from './icons/SearchIcon';
 import { SpinnerIcon } from './icons/SpinnerIcon';
 import { MicrophoneIcon } from './icons/MicrophoneIcon';
-import type { User } from '../types';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   isLoading: boolean;
-  user: User | null;
-  searchCount: number;
 }
 
 // Fix: Add minimal interfaces for Web Speech API events to solve TypeScript errors.
@@ -36,12 +33,14 @@ const SpeechRecognition = (window as any).SpeechRecognition || (window as any).w
 const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 if (recognition) {
   recognition.continuous = false;
-  recognition.lang = 'en-US';
+  // INTELLIGENT UPGRADE: Use the browser's language for much better accuracy.
+  // Fall back to English if the browser language is not available.
+  recognition.lang = navigator.language || 'en-US';
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading, user, searchCount }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading }) => {
   const [query, setQuery] = useState('');
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(recognition);
@@ -100,7 +99,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading, user, search
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search in any language..."
+            placeholder={isListening ? "Listening..." : "Search in any language..."}
             className="w-full pl-5 pr-3 py-2 text-gray-200 bg-transparent focus:outline-none"
             disabled={isLoading}
             />
@@ -108,7 +107,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading, user, search
             <button
                 type="button"
                 onClick={handleVoiceSearch}
-                className={`p-2 rounded-full hover:bg-gray-700/60 disabled:cursor-not-allowed flex items-center justify-center transition-colors ${isListening ? 'text-red-500' : 'text-gray-300'}`}
+                className={`p-2 rounded-full hover:bg-gray-700/60 disabled:cursor-not-allowed flex items-center justify-center transition-colors ${isListening ? 'text-red-500 animate-pulse' : 'text-gray-300'}`}
                 disabled={isLoading}
                 title="Search by voice"
             >
@@ -130,11 +129,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading, user, search
             </button>
         </div>
       </form>
-       {!user?.isPro && (
-        <p className="text-center text-xs text-gray-400 mt-2">
-            You have {Math.max(0, searchCount)} free {searchCount === 1 ? 'search' : 'searches'} remaining.
-        </p>
-       )}
     </div>
   );
 };

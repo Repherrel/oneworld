@@ -9,6 +9,7 @@ interface VideoCardProps {
 const formatViews = (views: string): string => {
   const num = parseInt(views, 10);
   if (isNaN(num)) return 'N/A';
+  if (num >= 1_000_000_000) return `${(num / 1_000_000_000).toFixed(1)}B`;
   if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
   if (num >= 1_000) return `${(num / 1_000).toFixed(0)}K`;
   return `${num}`;
@@ -32,24 +33,29 @@ const formatTimeAgo = (isoDate: string): string => {
 };
 
 const VideoCard: React.FC<VideoCardProps> = ({ video, onVideoSelect }) => {
-  // Generate a more professional-looking avatar from channel name initials
-  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(video.channelName)}&background=random&color=fff`;
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(video.channelName)}&background=random&color=fff&size=36`;
 
   return (
     <button 
       onClick={() => onVideoSelect(video)}
       className="flex flex-col group text-left w-full"
     >
-      <div className="relative rounded-xl overflow-hidden transition-transform duration-200 group-hover:rounded-none">
-        <img src={video.thumbnailUrl} alt={video.title} className="w-full h-auto object-cover aspect-video bg-gray-800" loading="lazy" />
+      <div className="relative mb-2">
+        <img 
+          src={video.thumbnailUrl} 
+          alt={video.title} 
+          className="w-full h-auto object-cover aspect-video bg-gray-800 rounded-xl transition-all duration-200 group-hover:rounded-none" 
+          loading="lazy" 
+        />
       </div>
-      <div className="mt-3 flex items-start gap-3">
+      <div className="flex items-start gap-3">
         <a
           href={`https://www.youtube.com/channel/${video.channelId}`} 
           target="_blank" 
           rel="noopener noreferrer" 
           onClick={(e) => e.stopPropagation()} 
           className="flex-shrink-0"
+          aria-label={`${video.channelName} channel`}
         >
           <img
             src={avatarUrl}
@@ -58,23 +64,27 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onVideoSelect }) => {
             loading="lazy"
           />
         </a>
-        <div className="overflow-hidden">
-          <h3 className="text-base font-medium text-gray-50 leading-snug break-words max-lines-2" title={video.title}>
+        <div className="flex flex-col">
+          <h3 
+            className="text-base font-medium text-gray-50 leading-snug break-words max-lines-2" 
+            title={video.title}
+            aria-label={video.title}
+          >
             {video.title}
           </h3>
-          <div className="text-sm text-gray-400 mt-1">
+          <div className="text-sm text-gray-400 mt-1 flex flex-col">
              <a 
                 href={`https://www.youtube.com/channel/${video.channelId}`} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 onClick={(e) => e.stopPropagation()} 
-                className="hover:text-white transition-colors"
+                className="hover:text-white transition-colors w-fit"
               >
                 {video.channelName}
               </a>
             <div className="flex items-center gap-1.5">
                 <span>{formatViews(video.views)} views</span>
-                <span className="text-gray-500">&bull;</span>
+                <span className="text-gray-500" aria-hidden="true">&bull;</span>
                 <span>{formatTimeAgo(video.uploadedAt)}</span>
             </div>
           </div>
