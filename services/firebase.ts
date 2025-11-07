@@ -25,13 +25,15 @@ import { getAuth } from "firebase/auth";
 //    - Go to Firebase -> Authentication -> Sign-in method.
 //    - Click "Google" and enable it.
 // =================================================================
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY_HERE",
-  authDomain: "PASTE_YOUR_AUTH_DOMAIN_HERE",
-  projectId: "PASTE_YOUR_PROJECT_ID_HERE",
-  storageBucket: "PASTE_YOUR_STORAGE_BUCKET_HERE",
-  messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID_HERE",
-  appId: "PASTE_YOUR_APP_ID_HERE",
+  apiKey: "AIzaSyA9WsQuNAJTnw80YT_7s-pNjtpK7Zj2Nt0",
+  authDomain: "oneworld-app-7b97f.firebaseapp.com",
+  projectId: "oneworld-app-7b97f",
+  storageBucket: "oneworld-app-7b97f.firebasestorage.app",
+  messagingSenderId: "510212924033",
+  appId: "1:510212924033:web:78bf0752e62f64d4e0e380",
+  measurementId: "G-5JS42NSZGR"
 };
 // =================================================================
 // END OF REQUIRED CONFIGURATION
